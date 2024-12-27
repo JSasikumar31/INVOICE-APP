@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+      }
+      .invoice-container {
+        width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        text-align: center;
+        border-bottom: 2px solid #333;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+      .header img {
+        max-width: 150px;
+        margin-bottom: 10px;
+      }
+      .header h1 {
+        font-size: 24px;
+        color: #0073e6;
+        margin: 0;
+      }
+      .header p {
+        font-size: 14px;
+        color: #666;
+      }
+      .invoice-details,
+      .company-details {
+        margin-bottom: 20px;
+      }
+      .details {
+        display: flex;
+        justify-content: space-between;
+      }
+      .details div {
+        width: 48%;
+      }
+      .details div p {
+        margin: 5px 0;
+        font-size: 14px;
+      }
+      .table-container {
+        margin-top: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: center;
+        font-size: 14px;
+      }
+      th {
+        background-color: #f8f8f8;
+      }
+      .total-section {
+        text-align: right;
+        padding-right: 20px;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .signature-section {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px 0;
+      }
+      .signature-section div {
+        width: 45%;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="invoice-container">
+      <div class="header">
+        <img src="backend/mainlogo.jpg" alt="Company Logo" />
+        <h1>Robocoupler Pvt Ltd</h1>
+        <p>
+          Start-up Village, IT SEZ, Madhurawada, Visakhapatnam, Andhra Pradesh
+          530041
+        </p>
+        <p>
+          Email: info@robocoupler.com | Ph: +91 81426 78901 / +91 99858 45468
+        </p>
+      </div>
+
+      <div class="details">
+        <div class="company-details">
+          <p><strong>Invoice No:</strong> 89127997</p>
+          <p><strong>Date:</strong> 13-04-2024</p>
+          <p><strong>Buyer’s Name & Address:</strong></p>
+          <p>THE PRINCIPAL</p>
+          <p>Dr. BR Ambedkar</p>
+          <p>Gurukulam, Tarlapem, Anakapalli District, 531001</p>
+          <p>Andhra Pradesh</p>
+        </div>
+        <div class="invoice-details">
+          <p><strong>Delivery Address:</strong> [To be filled]</p>
+          <p><strong>Project Name:</strong> Innovation</p>
+          <p><strong>Mode of Payment:</strong> Single Mode</p>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Name of the Component</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody id="invoice-items">
+            <tr>
+              <td>1</td>
+              <td>Node MCU with Program & Bootloader</td>
+              <td>4</td>
+              <td class="price">15680</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>L298</td>
+              <td>1</td>
+              <td class="price">1250</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Lipo Battery</td>
+              <td>3</td>
+              <td class="price">1800</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Battery Cell Holder</td>
+              <td>2</td>
+              <td class="price">450</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>2 Battery Cell Holder</td>
+              <td>3</td>
+              <td class="price">150</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>Switch</td>
+              <td>4</td>
+              <td class="price">500</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>Wood Piece with Power Coated</td>
+              <td>4</td>
+              <td class="price">1600</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>BO Motors</td>
+              <td>4</td>
+              <td class="price">1200</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td>Wheels</td>
+              <td>4</td>
+              <td class="price">600</td>
+            </tr>
+            <tr>
+              <td>10</td>
+              <td>Submersible Pump</td>
+              <td>2</td>
+              <td class="price">600</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="total-section">
+        <p>Subtotal: <span id="subtotal">0.00</span></p>
+        <p>IGST (18%): <span id="gst">0.00</span></p>
+        <p>
+          <strong>Total: <span id="total">0.00</span></strong>
+        </p>
+      </div>
+
+      <div class="signature-section">
+        <div>
+          <p>Customer Signature & Stamp</p>
+        </div>
+        <div>
+          <p>Company Stamp & Signature</p>
+          <img
+            src="signature-placeholder.png"
+            alt="Signature"
+            style="width: 100px"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Function to calculate the subtotal, GST, and total
+      function calculateTotal() {
+        const prices = document.querySelectorAll(".price");
+        let subtotal = 0;
+
+        prices.forEach((price) => {
+          subtotal += parseFloat(price.textContent) || 0;
+        });
+
+        const gst = subtotal * 0.18; // 18% GST
+        const total = subtotal + gst;
+
+        // Display the calculated values
+        document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+        document.getElementById("gst").textContent = gst.toFixed(2);
+        document.getElementById("total").textContent = total.toFixed(2);
+      }
+
+      // Call the function on page load to calculate totals
+      window.onload = calculateTotal;
+    </script>
+  </body>
+</html>

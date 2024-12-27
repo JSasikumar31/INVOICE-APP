@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+        background: linear-gradient(
+          135deg,
+          #f4f7fc,
+          #dce2f0
+        ); /* Soft gradient for background */
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        /* padding: 20px; */
+        overflow-x: hidden;
+      }
+
+      /* Invoice container with glass effect */
+      .invoice-container {
+        max-width: 900px;
+        width: 100%;
+        background: rgba(
+          255,
+          255,
+          255,
+          0.8
+        ); /* Semi-transparent white background */
+        backdrop-filter: blur(15px); /* Frosted glass effect */
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+        animation: fadeIn 1s ease-out; /* Fade in animation */
+      }
+
+      /* Header with gradient background */
+      .header {
+        text-align: center;
+        padding: 30px;
+        background: linear-gradient(
+          90deg,
+          #0073e6,
+          #00b0ff
+        ); /* Gradient header */
+        color: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        animation: slideIn 1.5s ease-out; /* Slide-in animation for header */
+      }
+
+      .header img {
+        max-width: 170px;
+        margin-bottom: 10px;
+       
+      }
+
+      .header h1 {
+        font-size: 36px;
+        font-weight: 600;
+        margin: 10px 0;
+      }
+
+      .header p {
+        font-size: 14px;
+        margin: 5px 0;
+      }
+
+      /* Details section - flex layout for responsiveness */
+      .details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        padding: 20px;
+        background: #f9fafc;
+        border-bottom: 2px solid #e0e0e0;
+      }
+
+      .details div {
+        font-size: 14px;
+      }
+
+      .details p {
+        margin: 8px 0;
+      }
+
+      .details p strong {
+        color: #0073e6;
+      }
+
+      /* Table styles */
+      .table-container {
+        padding: 20px;
+        background: #fff;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        border-radius: 12px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      table th,
+      table td {
+        padding: 15px;
+        border: 1px solid #e0e0e0;
+      }
+
+      table th {
+        background: #0073e6;
+        color: white;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+
+      table td.price {
+        text-align: right;
+        font-weight: 600;
+      }
+
+      table tr:nth-child(even) {
+        background: #f4f7fc;
+      }
+
+      /* Total section with animated transition */
+      .total-section {
+        padding: 20px;
+        background: #f9fafc;
+        border-top: 2px solid #e0e0e0;
+        text-align: right;
+        border-radius: 12px;
+        transition: background 0.3s ease;
+      }
+
+      .total-section:hover {
+        background: rgba(0, 179, 255, 0.1); /* Subtle hover effect */
+      }
+
+      .total-section p {
+        margin: 5px 0;
+        font-size: 16px;
+      }
+
+      .total-section .highlight {
+        font-size: 20px;
+        color: #0073e6;
+        font-weight: 600;
+      }
+
+      /* Signature Section */
+      .signature-section {
+        display: flex;
+        justify-content: space-between;
+        padding: px;
+        gap: 20px;
+      }
+
+      .signature-section div {
+        text-align: center;
+        font-size: 14px;
+      }
+
+      .signature-section img {
+        width: 250px;
+        margin-top: -40px;
+        animation: fadeInImage 1.5s ease-out;
+      }
+
+      .signature-section p {
+        
+        font-size: 16px;
+      }
+
+      /* Download Button */
+      .download-button {
+        text-align: center;
+        padding: 20px;
+      }
+
+      .download-button button {
+        background: linear-gradient(90deg, #0073e6, #00b0ff);
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .download-button button:hover {
+        background: #005bb5;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .download-button button:active {
+        background: #003f75;
+        transform: translateY(2px);
+        box-shadow: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="invoice-container" id="invoice">
+      <!-- HEADER -->
+      <div class="header">
+        <img src="/backend/mainlogo.jpg" alt="Company Logo" />
+        <h1>Robocoupler Pvt Ltd</h1>
+        <p>
+          Start-up Village, IT SEZ, Madhurawada, Visakhapatnam, Andhra Pradesh
+          530041
+        </p>
+        <p>
+          Email: info@robocoupler.com | Ph: +91 81426 78901 / +91 99858 45468
+        </p>
+      </div>
+
+      <!-- DETAILS -->
+      <div class="details">
+        <div>
+          <p><strong>Invoice No:</strong> 89127997</p>
+          <p><strong>Date:</strong> 13-04-2024</p>
+          <p><strong>Buyer’s Name & Address:</strong></p>
+          <p>THE PRINCIPAL</p>
+          <p>Dr. BR Ambedkar</p>
+          <p>Gurukulam, Tarlapem, Anakapalli District, 531001</p>
+          <p>Andhra Pradesh</p>
+        </div>
+        <div>
+          <p><strong>Delivery Address:</strong> [To be filled]</p>
+          <p><strong>Project Name:</strong> Innovation</p>
+          <p><strong>Mode of Payment:</strong> Single Mode</p>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Name of the Component</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Node MCU with Program & Bootloader</td>
+              <td>4</td>
+              <td class="price">15680</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>L298</td>
+              <td>1</td>
+              <td class="price">1250</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Lipo Battery</td>
+              <td>3</td>
+              <td class="price">1800</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Lipo Battery</td>
+              <td>3</td>
+              <td class="price">1800</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Lipo Battery</td>
+              <td>3</td>
+              <td class="price">1800</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Lipo Battery</td>
+              <td>3</td>
+              <td class="price">1800</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Lipo Battery</td>
+              <td>3</td>
+              <td class="price">1800</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TOTAL -->
+      <div class="total-section">
+        <p>Subtotal: <span id="subtotal">0.00</span></p>
+        <p>IGST (18%): <span id="gst">0.00</span></p>
+        <p class="highlight">Total: <span id="total">0.00</span></p>
+      </div>
+      <br />
+      <br />
+
+      <!-- SIGNATURE -->
+      <div class="signature-section">
+        <div>
+          <br />
+          <br />
+          <br />
+          <p>Customer Signature & Stamp</p>
+        </div>
+        <div>
+          <img src="signature.png" alt="Signature" />
+          <p>Company Stamp & Signature</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOWNLOAD BUTTON -->
+    <div class="download-button">
+      <button onclick="downloadPDF()">Send PDF</button>
+    </div>
+
+    <script>
+      // Calculate total on page load
+      function calculateTotal() {
+        const prices = document.querySelectorAll(".price");
+        let subtotal = 0;
+        prices.forEach((price) => {
+          subtotal += parseFloat(price.textContent) || 0;
+        });
+        const gst = subtotal * 0.18;
+        const total = subtotal + gst;
+        document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+        document.getElementById("gst").textContent = gst.toFixed(2);
+        document.getElementById("total").textContent = total.toFixed(2);
+      }
+
+      // Generate and download PDF
+      function downloadPDF() {
+        const invoice = document.getElementById("invoice");
+        const options = {
+          margin: 0.5,
+          filename: "invoice.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+        };
+        html2pdf().set(options).from(invoice).save();
+      }
+
+      // Initialize total calculation on page load
+      window.onload = calculateTotal;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice with To-Do List</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Add the previous styles here */
+      
+      /* Style for the To-Do list section */
+      .todo-list {
+        padding: 20px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        margin-top: 20px;
+      }
+
+      .todo-list ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .todo-list li {
+        padding: 10px;
+        margin: 5px 0;
+        background: #f4f7fc;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .todo-list li:hover {
+        background: #dce2f0;
+      }
+
+      .todo-list li.completed {
+        text-decoration: line-through;
+        background: #e0e0e0;
+      }
+
+      .todo-list li .price {
+        float: right;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Invoice Container -->
+    <div class="invoice-container" id="invoice">
+      <!-- HEADER -->
+      <div class="header">
+        <h1>Robocoupler Pvt Ltd</h1>
+        <p>Start-up Village, IT SEZ, Madhurawada, Visakhapatnam, Andhra Pradesh 530041</p>
+        <p>Email: info@robocoupler.com | Ph: +91 81426 78901</p>
+      </div>
+
+      <!-- DETAILS -->
+      <div class="details">
+        <div>
+          <p><strong>Invoice No:</strong> 89127997</p>
+          <p><strong>Date:</strong> 13-04-2024</p>
+          <p><strong>Buyer’s Name:</strong> THE PRINCIPAL</p>
+        </div>
+        <div>
+          <p><strong>Delivery Address:</strong> [To be filled]</p>
+          <p><strong>Project Name:</strong> Innovation</p>
+          <p><strong>Mode of Payment:</strong> Single Mode</p>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Name of the Component</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody id="invoice-table-body">
+            <!-- Selected items will be added here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TOTAL -->
+      <div class="total-section">
+        <p>Subtotal: <span id="subtotal">0.00</span></p>
+        <p>IGST (18%): <span id="gst">0.00</span></p>
+        <p class="highlight">Total: <span id="total">0.00</span></p>
+      </div>
+
+      <!-- DOWNLOAD BUTTON -->
+      <div class="download-button">
+        <button onclick="downloadPDF()">Download PDF</button>
+      </div>
+    </div>
+
+    <!-- To-Do List Section -->
+    <div class="todo-list">
+      <h3>To-Do List</h3>
+      <ul id="todo-list">
+        <li data-name="Node MCU with Program & Bootloader" data-price="15680">
+          Node MCU with Program & Bootloader <span class="price">₹15,680</span>
+        </li>
+        <li data-name="L298" data-price="1250">
+          L298 <span class="price">₹1,250</span>
+        </li>
+        <li data-name="Lipo Battery" data-price="1800">
+          Lipo Battery <span class="price">₹1,800</span>
+        </li>
+      </ul>
+    </div>
+
+    <script>
+      // Function to calculate total
+      function calculateTotal() {
+        const prices = document.querySelectorAll(".invoice-container .price");
+        let subtotal = 0;
+        prices.forEach((price) => {
+          subtotal += parseFloat(price.textContent.replace('₹', '').replace(',', '')) || 0;
+        });
+        const gst = subtotal * 0.18;
+        const total = subtotal + gst;
+        document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+        document.getElementById("gst").textContent = gst.toFixed(2);
+        document.getElementById("total").textContent = total.toFixed(2);
+      }
+
+      // Function to update the invoice when an item is clicked
+      document.querySelectorAll("#todo-list li").forEach(item => {
+        item.addEventListener("click", function() {
+          const itemName = item.getAttribute('data-name');
+          const itemPrice = item.getAttribute('data-price');
+
+          // Add item to the invoice table
+          const tableBody = document.getElementById("invoice-table-body");
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${tableBody.rows.length + 1}</td>
+            <td>${itemName}</td>
+            <td>1</td>
+            <td class="price">₹${itemPrice}</td>
+          `;
+          tableBody.appendChild(row);
+
+          // Mark item as completed
+          item.classList.add('completed');
+
+          // Recalculate the total
+          calculateTotal();
+        });
+      });
+
+      // Generate and download the PDF
+      function downloadPDF() {
+        const invoice = document.getElementById("invoice");
+        const options = {
+          margin: 0.5,
+          filename: "invoice.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+        };
+        html2pdf().set(options).from(invoice).save();
+      }
+    </script>
+  </body>
+</html>
